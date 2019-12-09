@@ -1,5 +1,8 @@
 from flask import Flask, request
 app = Flask(__name__)
+app.config["DEBUG"] = True
+
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -34,7 +37,7 @@ def create_a_record(zone, fqdn):
         #return 'FQDN: %s\nRdata: %s\nAddress: %s\nRecord Type: %s\nTTL: %s' % (fqdn, rdata, address, record_type, ttl, zone)
         return 'Creating new A Record\nFQDN: %s\nRdata: %s\nAddress: %s\nRecord Type: %s\nTTL: %s\nZone: %s' % (fqdn, rdata, "10.10.10.10", "A", ttl, zone)
     elif request.method == 'GET':
-        # return all A records
+        # return an array with all A records
         return 'A record: %s %s %s' % (zone, fqdn, "10.10.10.10")
 
 
@@ -60,5 +63,15 @@ def update_a_record(zone, fqdn, record_id):
         return 'Updating existing A Record\nFQDN: %s\nRdata: %s\nAddress: %s\nRecord Type: %s\nTTL: %s\nZone: %s' % (fqdn, rdata, "10.10.10.10", "A", ttl, zone)
     elif request.method == 'GET':
         # Return a specific A record
-        return 'A record: %s %s %s' % (zone, fqdn, "10.10.10.10")
+        rdata = [
+            {"rdata": {
+                "address": "10.0.10.10" 
+                }
+            }
+        ]
+        ttl = 3600
+        return 'FQDN: %s\nRdata: %s\nAddress: %s\nRecord Type: %s\nTTL: %s\nZone: %s' % (fqdn, rdata, "10.10.10.10", "A", ttl, zone)
+        #return 'A record: %s %s %s' % (zone, fqdn, "10.10.10.10")
 
+# Run the Flask app
+app.run(host='0.0.0.0', port=5000, debug=True)
